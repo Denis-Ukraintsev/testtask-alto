@@ -11,8 +11,10 @@ export const fetchUsers = createAsyncThunk(
 
 const initialState = {
   products: [],
+  productsPerPage: 3,
+  totalPages: null,
   currentPage: 1,
-  productsPerPage: 4,
+  loading: true,
 };
 
 const productsSlice = createSlice({
@@ -21,12 +23,25 @@ const productsSlice = createSlice({
   reducers: {
     setProducts: (state, action) => {
       state.products.push(...action.payload);
+      state.totalPages = state.products.length / state.productsPerPage;
+      state.loading = false;
     },
     setCurrentPage: (state, { payload }) => {
       state.currentPage = payload;
     },
+    setOnPreviousPage: (state) => {
+      if (state.currentPage > 1) {
+        state.currentPage -= 1;
+      }
+    },
+    setOnNextPage: (state) => {
+      if (state.currentPage < state.totalPages) {
+        state.currentPage += 1;
+      }
+    },
   },
 });
 
-export const { setProducts, setCurrentPage } = productsSlice.actions;
+export const { setProducts, setCurrentPage, setOnPreviousPage, setOnNextPage } =
+  productsSlice.actions;
 export default productsSlice.reducer;

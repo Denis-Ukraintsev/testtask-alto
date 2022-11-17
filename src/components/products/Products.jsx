@@ -5,16 +5,22 @@ import styled from "styled-components";
 
 export default function Products() {
   const dispatch = useDispatch();
-  const { products } = useSelector(({ products }) => products);
+  const { loading, products, currentPage, productsPerPage } = useSelector(
+    ({ products }) => products
+  );
 
   useEffect(() => {
     dispatch(fetchUsers());
   }, []);
 
-  const productsArray = products.map((product) => (
+  const lastPostIndex = currentPage * productsPerPage;
+  const firstPostIndex = lastPostIndex - productsPerPage;
+  const currentPageProducts = products.slice(firstPostIndex, lastPostIndex);
+
+  const productsArray = currentPageProducts.map((product) => (
     <ProductContainer>
       <ProductImage>
-        <img src={product.image_url} alt="" />
+        <img src={product.image_url} alt="productImage" />
       </ProductImage>
       <ProductInfo>
         <ProductAvailability>
@@ -30,7 +36,7 @@ export default function Products() {
     </ProductContainer>
   ));
 
-  return <Root>{productsArray}</Root>;
+  return loading ? <div>is loading ...</div> : <Root>{productsArray}</Root>;
 }
 
 const Root = styled.div`
