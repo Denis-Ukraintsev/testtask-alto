@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import {
@@ -9,7 +9,7 @@ import {
 
 export default function Pagination() {
   const dispatch = useDispatch();
-  const { loading, productsPerPage, products } = useSelector(
+  const { currentPage, loading, productsPerPage, products } = useSelector(
     ({ products }) => products
   );
 
@@ -42,14 +42,16 @@ export default function Pagination() {
     <PaginationContainer>
       <NavigateButton onClick={previousPage}>{i18n.moveBack}</NavigateButton>
       <PagesList>
-        {pageNumbers.map((number) => (
-          <PageNumber key={number}>
+        {pageNumbers.map((pageNumber) => (
+          <PageNumber key={pageNumber}>
             <Button
+              currentPage={currentPage}
+              pageNumber={pageNumber}
               onClick={() => {
-                paginate(number);
+                paginate(pageNumber);
               }}
             >
-              {number}
+              {pageNumber}
             </Button>
           </PageNumber>
         ))}
@@ -81,6 +83,8 @@ const Button = styled.button`
   cursor: pointer;
   border-radius: 50%;
   margin: 0 5px;
+  ${({ currentPage, pageNumber }) =>
+    currentPage === pageNumber && "color: #76CB22"};
 `;
 
 const NavigateButton = styled.button`
